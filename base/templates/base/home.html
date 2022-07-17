@@ -41,10 +41,10 @@
                 <div>{{voto}}</div>
                 <div>
                     <div>
-                        <a href="{% url 'cadastrar-eleitor' %}" class="btn" style="margin-bottom: 7px">Editar Eleitor</a>
+                        <a href="{% url 'editar-eleitor' voto.id %}" class="btn" style="margin-bottom: 7px">Editar Eleitor</a>
                     </div> 
                     <div>
-                        <a href="{% url 'cadastrar-eleitor' %}" class="btn" style="margin-bottom: 7px">Apagar Eleitor</a>
+                        <a href="{% url 'deletar-eleitor' voto.id %}" class="btn" style="margin-bottom: 7px">Apagar Eleitor</a>
                     </div> 
                 </div>
             </div>

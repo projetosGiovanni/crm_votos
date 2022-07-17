@@ -34,6 +34,13 @@ def cadastrar(request, hierarquia_form, hierarquia, superior):
                 voto.save()
             return redirect('home')
 
+
+def atualizar(hierarquia_form, pessoa_form):
+    if hierarquia_form.is_valid() and pessoa_form.is_valid():
+        hierarquia_form.save()
+        pessoa_form.save()
+        return redirect('home')
+
 # Create your views here.
 
 
@@ -45,7 +52,13 @@ def home(request):
 
 def cadastrarGrupo(request):
     form = GrupoForm()
-    context = {'form': form}
+    if request.method == 'POST':
+        form = GrupoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+
+    context = {'pessoa_form': form, 'título': 'novo grupo', 'hierarquia': 'grupo'}
     return render(request, 'base/colaborador_form.html', context)
 
 
@@ -53,7 +66,7 @@ def cadastrarEquipe(request):
     if request.method == 'POST':
         return cadastrar(request, EquipeForm(request.POST), 'equipe', 'grupo')
 
-    context = {'form': EquipeForm(), 'pessoa_form': PessoaForm(), 'título': 'nova equipe'}
+    context = {'form': EquipeForm(), 'pessoa_form': PessoaForm(), 'título': 'nova equipe', 'hierarquia': 'coordenador'}
     return render(request, 'base/colaborador_form.html', context)
 
 
@@ -61,7 +74,7 @@ def cadastrarLíder(request):
     if request.method == 'POST':
         return cadastrar(request, LíderForm(request.POST), 'líder', 'equipe')
 
-    context = {'form': LíderForm(), 'pessoa_form': PessoaForm(), 'título': 'novo líder'}
+    context = {'form': LíderForm(), 'pessoa_form': PessoaForm(), 'título': 'novo líder', 'hierarquia': 'líder'}
     return render(request, 'base/colaborador_form.html', context)
 
 
@@ -69,7 +82,10 @@ def cadastrarCabo(request):
     if request.method == 'POST':
         return cadastrar(request, CaboForm(request.POST), 'cabo', 'líder')
 
-    context = {'form': CaboForm(), 'pessoa_form': PessoaForm(), 'título': 'novo cabo eleitoral'}
+    context = {
+        'form': CaboForm(),
+        'pessoa_form': PessoaForm(),
+        'título': 'novo cabo eleitoral', 'hierarquia': 'cabo eleitoral'}
     return render(request, 'base/colaborador_form.html', context)
 
 
@@ -77,5 +93,30 @@ def cadastrarVoto(request):
     if request.method == 'POST':
         return cadastrar(request, VotoForm(request.POST), 'eleitor', 'cabo')
 
-    context = {'form': VotoForm(), 'pessoa_form': PessoaForm(), 'título': 'novo eleitor'}
+    context = {'form': VotoForm(), 'pessoa_form': PessoaForm(), 'título': 'novo eleitor', 'hierarquia': 'eleitor'}
     return render(request, 'base/colaborador_form.html', context)
+
+
+def editarVoto(request, pk):
+    voto = Voto.objects.get(id=pk)
+    pessoa = voto.eleitor
+
+    if request.method == 'POST':
+        hierarquia_form = VotoForm(request.POST, instance=voto)
+        pessoa_form = PessoaForm(request.POST, instance=pessoa)
+        return atualizar(hierarquia_form, pessoa_form)
+
+    context = {'form': VotoForm(instance=voto), 'pessoa_form': PessoaForm(
+        instance=pessoa), 'título': 'novo eleitor', 'hierarquia': 'eleitor'}
+    return render(request, 'base/colaborador_form.html', context)
+
+
+def deletarVoto(request, pk):
+    voto = Voto.objects.get(id=pk)
+    pessoa = voto.eleitor
+    if request.method == 'POST':
+        voto.delete()
+        pessoa.delete()
+        return redirect('home')
+    context = {'obj': voto}
+    return render(request, 'base/delete.html', context)

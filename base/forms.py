@@ -36,3 +36,6 @@ class VotoForm(forms.ModelForm):
     class Meta:
         model = Voto
         fields = ['cabo']
+        labels = {
+            'cabo': 'Cabo eleitoral'
+        }
