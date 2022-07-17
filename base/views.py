@@ -1,23 +1,9 @@
 from multiprocessing import context
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic.edit import FormView
 from .models import Pessoa, Voto
 from .forms import PessoaForm, GrupoForm, EquipeForm, LíderForm, CaboForm, VotoForm
 
-
-def salvarNoBanco(request):
-    if request.method == 'POST':
-        pessoa_form = PessoaForm(request.POST)
-        pessoa = None
-
-        if pessoa_form.is_valid():
-            print("saving...")
-            pessoa = pessoa_form.save()
-            print(pessoa.pk)
-
-        form = EquipeForm(request.POST)
-        if form.is_valid():
-            form.save()
 
 # Create your views here.
 
@@ -35,10 +21,39 @@ def cadastrarGrupo(request):
 
 
 def cadastrarEquipe(request):
-    hierarquia = "nova Equipe"
-    pessoa_form = PessoaForm()
     form = EquipeForm()
-    context = {'pessoa_form': pessoa_form, 'form': form, 'hierarquia': hierarquia}
 
-    salvarNoBanco(request)
+    if request.method == 'POST':
+        form = EquipeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+
+    context = {'form': form}
+    return render(request, 'base/colaborador_form.html', context)
+
+
+def cadastrarLíder(request):
+    form = LíderForm()
+
+    if request.method == 'POST':
+        form = LíderForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+
+    context = {'form': form}
+    return render(request, 'base/colaborador_form.html', context)
+
+
+def cadastrarCabo(request):
+    form = CaboForm()
+
+    if request.method == 'POST':
+        form = CaboForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+
+    context = {'form': form}
     return render(request, 'base/colaborador_form.html', context)
