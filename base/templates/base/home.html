@@ -1,0 +1,42 @@
+{% extends 'main.html' %}
+
+{% block content %}
+    <section class="tabela-votos">
+        <div class="linha-tabela-votos">
+            <div>
+                <a href="{% url 'cadastrar-grupo' %}" class="btn">Novo Grupo</a>
+            </div>
+            <div>
+                <a href="{% url 'cadastrar-equipe' %}" class="btn">Nova Equipe</a>
+            </div>
+            <div>
+                <a href="{% url 'cadastrar-grupo' %}" class="btn">Novo Líder</a>
+            </div>
+            <div>
+                <a href="{% url 'cadastrar-grupo' %}" class="btn">Novo Cabo Eleitoral</a>
+            </div>
+            <div>
+                <a href="{% url 'cadastrar-grupo' %}" class="btn">Novo Eleitor</a>
+            </div> 
+        </div>
+        
+        <div class="linha-tabela-votos">
+            <div><h3>Grupo</h3></div>
+            <div><h3>Equipe</h3></div>
+            <div><h3>Líder</h3></div>
+            <div><h3>Cabo Eleitoral</h3></div>
+            <div><h3>Eleitor</h3></div>
+        </div>
+        <hr>
+            {% for voto in votos %}
+            <div class="linha-tabela-votos">
+                <div>{{voto.cabo.líder.equipe.grupo}}</div>
+                <div>{{voto.cabo.líder.equipe}}</div>
+                <div>{{voto.cabo.líder}}</div>
+                <div>{{voto.cabo}}</div>
+                <div>{{voto}}</div>
+            </div>
+            <hr>
+            {% endfor %}
+    </section>
+{% endblock  %}

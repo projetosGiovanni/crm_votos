@@ -1,0 +1,16 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<div>
+    <h2>Cadastrar {{hierarquia}}</h2>
+    <form method="POST" action="">
+        {% csrf_token %}
+        {{form.grupo.label}}
+        {{form.grupo}}
+        {{pessoa_form.as_p}}
+        <button>Send</button>
+    </form>
+</div>
+
+{% endblock content %}

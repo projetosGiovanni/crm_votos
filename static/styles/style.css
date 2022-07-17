@@ -1,0 +1,76 @@
+/**************************/
+/* GENERAL CSS */
+/**************************/
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  line-height: 1;
+  font-weight: 400;
+  font-size: 1.4rem;
+}
+
+/**************************/
+/* CSS */
+/**************************/
+.header {
+  text-align: center;
+  margin: 50px;
+}
+
+.tabela-votos {
+  margin: 0 20px;
+  text-align: center;
+}
+
+.linha-tabela-votos {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  margin: 8px 0;
+}
+
+h3 {
+  margin: 0;
+}
+
+.nav {
+  margin-bottom: 20px;
+}
+
+/* font-size: 1.8rem; */
+.btn:link,
+.btn:visited {
+  display: inline-block;
+  text-decoration: none;
+
+  font-weight: 600;
+  line-height: 1.5rem;
+  padding: 0.8rem 1.6rem;
+  border-radius: 10px;
+  border: 0;
+  color: inherit;
+
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+
+  transition: all 0.3s;
+  background-color: #94d82d;
+
+  margin-bottom: 20px;
+}
+
+.btn:hover,
+.btn:active {
+  background-color: #85c229;
+}
