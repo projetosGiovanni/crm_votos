@@ -18,6 +18,9 @@
             <div>
                 <a href="{% url 'cadastrar-eleitor' %}" class="btn">Novo Eleitor</a>
             </div> 
+            <div>
+
+            </div>
         </div>
         
         <div class="linha-tabela-votos">
@@ -26,6 +29,7 @@
             <div><h3>Líder</h3></div>
             <div><h3>Cabo Eleitoral</h3></div>
             <div><h3>Eleitor</h3></div>
+            <div></div>
         </div>
         <hr>
             {% for voto in votos %}
@@ -35,6 +39,14 @@
                 <div>{{voto.cabo.líder}}</div>
                 <div>{{voto.cabo}}</div>
                 <div>{{voto}}</div>
+                <div>
+                    <div>
+                        <a href="{% url 'cadastrar-eleitor' %}" class="btn" style="margin-bottom: 7px">Editar Eleitor</a>
+                    </div> 
+                    <div>
+                        <a href="{% url 'cadastrar-eleitor' %}" class="btn" style="margin-bottom: 7px">Apagar Eleitor</a>
+                    </div> 
+                </div>
             </div>
             <hr>
             {% endfor %}
