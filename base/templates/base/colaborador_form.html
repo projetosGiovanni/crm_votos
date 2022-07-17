@@ -3,10 +3,11 @@
 {% block content %}
 
 <div>
-    <h2>Cadastrar novo {{hierarquia}}</h2>
+    <h2>Cadastrar {{título}}</h2>
     <form method="POST" action="">
         {% csrf_token %}
         {{form}}
+        <p> Dados do {{informação}}
         {{pessoa_form.as_p}}
         <button>Send</button>
     </form>
