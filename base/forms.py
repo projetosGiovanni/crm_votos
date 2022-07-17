@@ -17,22 +17,22 @@ class GrupoForm(forms.ModelForm):
 class EquipeForm(forms.ModelForm):
     class Meta:
         model = Equipe
-        fields = '__all__'
+        fields = ['grupo']
 
 
 class LíderForm(forms.ModelForm):
     class Meta:
         model = Líder
-        fields = '__all__'
+        fields = ['equipe']
 
 
 class CaboForm(forms.ModelForm):
     class Meta:
         model = Cabo
-        fields = '__all__'
+        fields = ['líder']
 
 
 class VotoForm(forms.ModelForm):
     class Meta:
         model = Voto
-        fields = '__all__'
+        fields = ['cabo']

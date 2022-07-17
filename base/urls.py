@@ -7,5 +7,5 @@ urlpatterns = [
     path('cadastrar-equipe/', views.cadastrarEquipe, name='cadastrar-equipe'),
     path('cadastrar-líder/', views.cadastrarLíder, name='cadastrar-líder'),
     path('cadastrar-cabo/', views.cadastrarCabo, name='cadastrar-cabo'),
-    #     path('cadastrar-eleitor/', views.cadastrarEleitor, name='cadastrar-eleitor'),
+    path('cadastrar-eleitor/', views.cadastrarVoto, name='cadastrar-eleitor'),
 ]
