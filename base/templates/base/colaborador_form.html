@@ -3,11 +3,15 @@
 {% block content %}
 
 <div>
-    <h2>Cadastrar {{hierarquia}}</h2>
+    <h2>Cadastrar Colaborador</h2>
     <form method="POST" action="">
         {% csrf_token %}
-        {{form.grupo.label}}
-        {{form.grupo}}
+        <label for="hierarquia">Selecione a hierarquia:</label>
+        <select name="hierarquia" id="hierarquia">
+            <option value="cabo">Cabo Eleitoral</option>
+            <option value="líder">Líder</option>
+            <option value="coordenador">Coordenador</option>
+        </select>
         {{pessoa_form.as_p}}
         <button>Send</button>
     </form>
