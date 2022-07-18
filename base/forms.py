@@ -20,6 +20,12 @@ class EquipeForm(forms.ModelForm):
         fields = ['grupo']
 
 
+class EquipeFormAll(forms.ModelForm):
+    class Meta:
+        model = Equipe
+        fields = '__all__'
+
+
 class LíderForm(forms.ModelForm):
     class Meta:
         model = Líder

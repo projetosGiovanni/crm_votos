@@ -2,7 +2,7 @@ from multiprocessing import context
 from django.shortcuts import render, redirect
 from django.views.generic.edit import FormView
 from .models import Pessoa, Grupo, Equipe, Líder, Cabo, Voto
-from .forms import PessoaForm, GrupoForm, EquipeForm, LíderForm, CaboForm, VotoForm
+from .forms import PessoaForm, GrupoForm, EquipeForm, EquipeFormAll, LíderForm, CaboForm, VotoForm
 
 
 # Função auxiliar
@@ -50,32 +50,83 @@ def home(request):
     return render(request, 'base/home.html', context)
 
 
+# --------------------- GRUPOS ---------------------
+
+
+def grupos(request):
+    grupos = Grupo.objects.all()
+    context = {'colaboradores': grupos, 'link': 'editar-grupo'}
+    return render(request, 'base/colaboradores.html', context)
+
+
 def cadastrarGrupo(request):
-    form = GrupoForm()
+    hierarquia_form = GrupoForm()
     if request.method == 'POST':
-        form = GrupoForm(request.POST)
-        if form.is_valid():
-            form.save()
+        hierarquia_form = GrupoForm(request.POST)
+        if hierarquia_form.is_valid():
+            hierarquia_form.save()
             return redirect('home')
 
-    context = {'pessoa_form': form, 'título': 'novo grupo', 'hierarquia': 'grupo'}
+    context = {'pessoa_form': hierarquia_form, 'título': 'novo grupo', 'hierarquia': 'grupo'}
     return render(request, 'base/colaborador_form.html', context)
+
+
+def editarGrupo(request, pk):
+    grupo = Grupo.objects.get(id=pk)
+
+    if request.method == 'POST':
+        hierarquia_form = GrupoForm(request.POST, instance=grupo)
+        hierarquia_form.save()
+        return redirect('grupos')
+
+    context = {'pessoa_form': GrupoForm(instance=grupo), 'título': 'Edite o grupo', 'hierarquia': 'grupo'}
+    return render(request, 'base/colaborador_form.html', context)
+
+
+# --------------------- EQUIPES ---------------------
+def equipes(request):
+    equipes = Equipe.objects.all()
+    context = {'colaboradores': equipes, 'link': 'editar-equipe'}
+    return render(request, 'base/colaboradores.html', context)
 
 
 def cadastrarEquipe(request):
     if request.method == 'POST':
         return cadastrar(request, EquipeForm(request.POST), 'equipe', 'grupo')
 
-    context = {'form': EquipeForm(), 'pessoa_form': PessoaForm(), 'título': 'nova equipe', 'hierarquia': 'coordenador'}
+    context = {
+        'form': EquipeForm(),
+        'pessoa_form': PessoaForm(),
+        'título': 'Cadastrar nova equipe', 'hierarquia': 'coordenador'}
     return render(request, 'base/colaborador_form.html', context)
+
+
+def editarEquipe(request, pk):
+    equipe = Equipe.objects.get(id=pk)
+
+    if request.method == 'POST':
+        hierarquia_form = EquipeFormAll(request.POST, instance=equipe)
+        hierarquia_form.save()
+        return redirect('equipes')
+
+    context = {'pessoa_form': EquipeFormAll(instance=equipe), 'título': 'Edite a equipe', 'hierarquia': 'equipe'}
+    return render(request, 'base/colaborador_form.html', context)
+
+# --------------------- LÍDERES ---------------------
 
 
 def cadastrarLíder(request):
     if request.method == 'POST':
         return cadastrar(request, LíderForm(request.POST), 'líder', 'equipe')
 
-    context = {'form': LíderForm(), 'pessoa_form': PessoaForm(), 'título': 'novo líder', 'hierarquia': 'líder'}
+    context = {
+        'form': LíderForm(),
+        'pessoa_form': PessoaForm(),
+        'título': 'Cadastrar novo líder', 'hierarquia': 'líder'}
     return render(request, 'base/colaborador_form.html', context)
+
+
+# --------------------- CABOS ELEITORAIS ---------------------
 
 
 def cadastrarCabo(request):
@@ -85,15 +136,21 @@ def cadastrarCabo(request):
     context = {
         'form': CaboForm(),
         'pessoa_form': PessoaForm(),
-        'título': 'novo cabo eleitoral', 'hierarquia': 'cabo eleitoral'}
+        'título': 'Cadastrar novo cabo eleitoral', 'hierarquia': 'cabo eleitoral'}
     return render(request, 'base/colaborador_form.html', context)
+
+
+# --------------------- ELEITORES ---------------------
 
 
 def cadastrarVoto(request):
     if request.method == 'POST':
         return cadastrar(request, VotoForm(request.POST), 'eleitor', 'cabo')
 
-    context = {'form': VotoForm(), 'pessoa_form': PessoaForm(), 'título': 'novo eleitor', 'hierarquia': 'eleitor'}
+    context = {
+        'form': VotoForm(),
+        'pessoa_form': PessoaForm(),
+        'título': 'Cadastrar novo eleitor', 'hierarquia': 'eleitor'}
     return render(request, 'base/colaborador_form.html', context)
 
 

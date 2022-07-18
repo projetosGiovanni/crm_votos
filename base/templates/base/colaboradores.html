@@ -1,0 +1,7 @@
+{% extends 'main.html' %}
+
+{% block content %}
+    {% for colaborador in colaboradores %}
+    <div><a href="{% url link colaborador.id %}">{{colaborador}}</a></div>
+    {% endfor %}
+{% endblock content %}

@@ -3,13 +3,14 @@
 {% block content %}
 
 <div>
-    <h2>Cadastrar {{título}}</h2>
+    <h2>{{título}}</h2>
     <form method="POST" action="">
         {% csrf_token %}
         {{form}}
         <p> Dados do {{hierarquia}}:
         {{pessoa_form.as_p}}
-        <button>Send</button>
+        <button>Salvar</button>
+        <a href="{{request.META.HTTP_REFERER}}">Voltar</a>
     </form>
 </div>
 
