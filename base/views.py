@@ -5,18 +5,20 @@ from .models import Pessoa, Grupo, Equipe, Líder, Cabo, Voto
 from .forms import PessoaForm, GrupoForm, EquipeForm, EquipeFormAll, LíderForm, LíderFormAll, CaboForm, CaboFormAll, VotoForm
 
 
-# Função auxiliar
+# Funções auxiliares
 
 
 def cadastrar(request, hierarquia_form, hierarquia, superior):
     pessoa_form = PessoaForm(request.POST)
     if pessoa_form.is_valid():
         pessoa = pessoa_form.save()
+        pessoa.hierarquia = hierarquia
+        pessoa.save()
 
         if hierarquia_form.is_valid():
             superior_pk = int(request.POST[superior])
 
-            if hierarquia == 'equipe':
+            if hierarquia == 'coordenador':
                 grupo = Grupo.objects.get(pk=superior_pk)
                 equipe = Equipe(grupo=grupo, coordenador=pessoa)
                 equipe.save()
@@ -33,6 +35,29 @@ def cadastrar(request, hierarquia_form, hierarquia, superior):
                 voto = Voto(cabo=cabo, eleitor=pessoa)
                 voto.save()
             return redirect('home')
+
+
+def editar(request, context, hierarquia_selecionada, superior, pessoa):
+
+    superior_enviado = request.POST.get(superior)
+    pessoa_enviada = request.POST.get(pessoa)
+    cpf_pessoa_enviada = pessoa_enviada[-15:-1]
+
+    try:
+        superior_alterar = Grupo.objects.get(grupo=superior_enviado)
+        pessoa_alterar = Pessoa.objects.get(cpf=cpf_pessoa_enviada)
+    except:
+        superior_alterar = None
+        pessoa_alterar = None
+
+    if superior_alterar != None and pessoa_alterar != None:
+        hierarquia_selecionada.grupo = superior_alterar
+        hierarquia_selecionada.coordenador = pessoa_alterar
+        hierarquia_selecionada.save()
+        return redirect('equipes')
+    else:
+        context['erro'] = True
+        return render(request, 'base/editar_colaborador.html', context)
 
 
 def atualizar(hierarquia_form, pessoa_form):
@@ -90,7 +115,7 @@ def equipes(request):
 
 def cadastrarEquipe(request):
     if request.method == 'POST':
-        return cadastrar(request, EquipeForm(request.POST), 'equipe', 'grupo')
+        return cadastrar(request, EquipeForm(request.POST), 'coordenador', 'grupo')
 
     context = {
         'form': EquipeForm(),
@@ -100,25 +125,16 @@ def cadastrarEquipe(request):
 
 
 def editarEquipe(request, pk):
-    equipe = Equipe.objects.get(id=pk)
+    equipe_selecionada = Equipe.objects.get(id=pk)
+    pessoas = Pessoa.objects.exclude(hierarquia='eleitor')
     grupos = Grupo.objects.all()
     equipes = Equipe.objects.all()
+    context = {'erro': False, 'título': 'Edite a equipe', 'subtítulo': 'da equipe',
+               'equipe_selecionada': equipe_selecionada, 'grupos': grupos, 'pessoas': pessoas}
 
     if request.method == 'POST':
-        grupo_enviado = request.POST.get('grupo')
-        coordenador_enviado = request.POST.get('coordenador')
+        return editar(request, context, equipe_selecionada, 'grupo', 'coordenador')
 
-        # coordenador_alterar = Pessoa.objects.get(nome=coordenador_enviado)
-        # print(coordenador_alterar)
-        try:
-            grupo_alterar = Grupo.objects.get(grupo=grupo_enviado)
-        except:
-            grupo_alterar = None
-
-        return redirect('equipes')
-
-    context = {'título': 'Edite a equipe', 'hierarquia': 'equipe',
-               'equipeSelecionada': equipe, 'grupos': grupos, 'equipes': equipes}
     return render(request, 'base/editar_colaborador.html', context)
 
 

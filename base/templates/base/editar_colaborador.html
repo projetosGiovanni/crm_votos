@@ -3,12 +3,15 @@
 {% block content %}
 
 <div>
+    {% if erro == True %}
+        <p> Selecione uma pessoa cadastrada! <p>
+    {% endif %}
     <h2>{{título}}</h2>
     <form method="POST" action="">
         {% csrf_token %}
-        <p>Dados do {{hierarquia}}:</p>
+        <p>Dados {{subtítulo}}:</p>
             <label for="grupo">Grupo:</label> 
-            <input required type="text" value="{{equipeSelecionada.grupo}}" name="grupo" list="grupo-list">
+            <input required type="text" value="{{equipe_selecionada.grupo}}" name="grupo" list="grupo-list">
             <datalist id="grupo-list">
                 <select id="grupo">
                 {% for grupo in grupos %}
@@ -18,11 +21,11 @@
             </datalist>
 
             <label for="equipe">Equipe:</label> 
-            <input required type="text" value="{{equipeSelecionada.coordenador}}" name="coordenador" list="equipe-list">
+            <input required type="text" value="{{equipe_selecionada.coordenador}} ({{equipe_selecionada.coordenador.cpf}})" name="coordenador" list="equipe-list">
             <datalist id="equipe-list">
                 <select id="equipe">
-                {% for equipe in equipes %}
-                    <option value="{{equipe.coordenador}}">{{equipe.coordenador}}</option>
+                {% for pessoa in pessoas %}
+                    <option value="{{pessoa}} ({{pessoa.cpf}})">{{pessoa}} ({{pessoa.cpf}})</option>
                 {% endfor %}
                 </select>            
             </datalist>

@@ -5,7 +5,7 @@ from .models import Pessoa, Grupo, Equipe, Líder, Cabo, Voto
 class PessoaForm(forms.ModelForm):
     class Meta:
         model = Pessoa
-        fields = '__all__'
+        exclude = ['hierarquia']
 
 
 class GrupoForm(forms.ModelForm):
