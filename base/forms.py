@@ -32,10 +32,22 @@ class LíderForm(forms.ModelForm):
         fields = ['equipe']
 
 
+class LíderFormAll(forms.ModelForm):
+    class Meta:
+        model = Líder
+        fields = '__all__'
+
+
 class CaboForm(forms.ModelForm):
     class Meta:
         model = Cabo
         fields = ['líder']
+
+
+class CaboFormAll(forms.ModelForm):
+    class Meta:
+        model = Cabo
+        fields = '__all__'
 
 
 class VotoForm(forms.ModelForm):

@@ -2,7 +2,7 @@ from multiprocessing import context
 from django.shortcuts import render, redirect
 from django.views.generic.edit import FormView
 from .models import Pessoa, Grupo, Equipe, Líder, Cabo, Voto
-from .forms import PessoaForm, GrupoForm, EquipeForm, EquipeFormAll, LíderForm, CaboForm, VotoForm
+from .forms import PessoaForm, GrupoForm, EquipeForm, EquipeFormAll, LíderForm, LíderFormAll, CaboForm, CaboFormAll, VotoForm
 
 
 # Função auxiliar
@@ -51,8 +51,6 @@ def home(request):
 
 
 # --------------------- GRUPOS ---------------------
-
-
 def grupos(request):
     grupos = Grupo.objects.all()
     context = {'colaboradores': grupos, 'link': 'editar-grupo'}
@@ -103,16 +101,32 @@ def cadastrarEquipe(request):
 
 def editarEquipe(request, pk):
     equipe = Equipe.objects.get(id=pk)
+    grupos = Grupo.objects.all()
+    equipes = Equipe.objects.all()
 
     if request.method == 'POST':
-        hierarquia_form = EquipeFormAll(request.POST, instance=equipe)
-        hierarquia_form.save()
+        grupo_enviado = request.POST.get('grupo')
+        coordenador_enviado = request.POST.get('coordenador')
+
+        # coordenador_alterar = Pessoa.objects.get(nome=coordenador_enviado)
+        # print(coordenador_alterar)
+        try:
+            grupo_alterar = Grupo.objects.get(grupo=grupo_enviado)
+        except:
+            grupo_alterar = None
+
         return redirect('equipes')
 
-    context = {'pessoa_form': EquipeFormAll(instance=equipe), 'título': 'Edite a equipe', 'hierarquia': 'equipe'}
-    return render(request, 'base/colaborador_form.html', context)
+    context = {'título': 'Edite a equipe', 'hierarquia': 'equipe',
+               'equipeSelecionada': equipe, 'grupos': grupos, 'equipes': equipes}
+    return render(request, 'base/editar_colaborador.html', context)
+
 
 # --------------------- LÍDERES ---------------------
+def líderes(request):
+    líderes = Líder.objects.all()
+    context = {'colaboradores': líderes, 'link': 'editar-líder'}
+    return render(request, 'base/colaboradores.html', context)
 
 
 def cadastrarLíder(request):
@@ -126,7 +140,23 @@ def cadastrarLíder(request):
     return render(request, 'base/colaborador_form.html', context)
 
 
+def editarLíder(request, pk):
+    líder = Líder.objects.get(id=pk)
+
+    if request.method == 'POST':
+        hierarquia_form = LíderFormAll(request.POST, instance=líder)
+        hierarquia_form.save()
+        return redirect('líderes')
+
+    context = {'pessoa_form': LíderFormAll(instance=líder), 'título': 'Edite o(a) líder', 'hierarquia': 'líder'}
+    return render(request, 'base/colaborador_form.html', context)
+
+
 # --------------------- CABOS ELEITORAIS ---------------------
+def cabos(request):
+    cabos = Cabo.objects.all()
+    context = {'colaboradores': cabos, 'link': 'editar-cabo'}
+    return render(request, 'base/colaboradores.html', context)
 
 
 def cadastrarCabo(request):
@@ -139,6 +169,17 @@ def cadastrarCabo(request):
         'título': 'Cadastrar novo cabo eleitoral', 'hierarquia': 'cabo eleitoral'}
     return render(request, 'base/colaborador_form.html', context)
 
+
+def editarCabo(request, pk):
+    cabo = Cabo.objects.get(id=pk)
+
+    if request.method == 'POST':
+        hierarquia_form = CaboFormAll(request.POST, instance=cabo)
+        hierarquia_form.save()
+        return redirect('cabo')
+
+    context = {'pessoa_form': CaboFormAll(instance=cabo), 'título': 'Edite o(a) cabo', 'hierarquia': 'cabo'}
+    return render(request, 'base/colaborador_form.html', context)
 
 # --------------------- ELEITORES ---------------------
 

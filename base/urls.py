@@ -11,8 +11,13 @@ urlpatterns = [
     path('cadastrar-equipe/', views.cadastrarEquipe, name='cadastrar-equipe'),
     path('editar-equipe/<str:pk>/', views.editarEquipe, name='editar-equipe'),
 
+    path('líderes/', views.líderes, name='líderes'),
     path('cadastrar-líder/', views.cadastrarLíder, name='cadastrar-líder'),
+    path('editar-líder/<str:pk>/', views.editarLíder, name='editar-líder'),
+
+    path('cabos/', views.cabos, name='cabos'),
     path('cadastrar-cabo/', views.cadastrarCabo, name='cadastrar-cabo'),
+    path('editar-cabo/<str:pk>/', views.editarCabo, name='editar-cabo'),
 
     path('cadastrar-eleitor/', views.cadastrarVoto, name='cadastrar-eleitor'),
     path('editar-eleitor/<str:pk>/', views.editarVoto, name='editar-eleitor'),
