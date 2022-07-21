@@ -37,27 +37,22 @@ def cadastrar(request, hierarquia_form, hierarquia, superior):
             return redirect('home')
 
 
-def editar(request, context, hierarquia_selecionada, superior, pessoa):
+def editar(request, context, hierarquia_selecionada, novo_superior, pessoa, superior, redirect_url):
 
-    superior_enviado = request.POST.get(superior)
     pessoa_enviada = request.POST.get(pessoa)
     cpf_pessoa_enviada = pessoa_enviada[-15:-1]
 
     try:
-        superior_alterar = Grupo.objects.get(grupo=superior_enviado)
-        pessoa_alterar = Pessoa.objects.get(cpf=cpf_pessoa_enviada)
+        nova_pessoa = Pessoa.objects.get(cpf=cpf_pessoa_enviada)
     except:
-        superior_alterar = None
-        pessoa_alterar = None
-
-    if superior_alterar != None and pessoa_alterar != None:
-        hierarquia_selecionada.grupo = superior_alterar
-        hierarquia_selecionada.coordenador = pessoa_alterar
-        hierarquia_selecionada.save()
-        return redirect('equipes')
-    else:
         context['erro'] = True
         return render(request, 'base/editar_colaborador.html', context)
+
+    setattr(hierarquia_selecionada, pessoa, nova_pessoa)
+    setattr(hierarquia_selecionada, superior, novo_superior)
+    hierarquia_selecionada.save()
+
+    return redirect(redirect_url)
 
 
 def atualizar(hierarquia_form, pessoa_form):
@@ -125,15 +120,24 @@ def cadastrarEquipe(request):
 
 
 def editarEquipe(request, pk):
-    equipe_selecionada = Equipe.objects.get(id=pk)
+    equipe = Equipe.objects.get(id=pk)
     pessoas = Pessoa.objects.exclude(hierarquia='eleitor')
     grupos = Grupo.objects.all()
-    equipes = Equipe.objects.all()
+
     context = {'erro': False, 'título': 'Edite a equipe', 'subtítulo': 'da equipe',
-               'equipe_selecionada': equipe_selecionada, 'grupos': grupos, 'pessoas': pessoas}
+               'equipe_selecionada': equipe, 'grupos': grupos, 'pessoas': pessoas}
 
     if request.method == 'POST':
-        return editar(request, context, equipe_selecionada, 'grupo', 'coordenador')
+        superior_enviado = request.POST.get('grupo')
+        try:
+            novo_superior = Grupo.objects.get(grupo=superior_enviado)
+        except:
+            context['erro'] = True
+            return render(request, 'base/editar_colaborador.html', context)
+
+        return editar(
+            request, context, equipe, novo_superior, pessoa='coordenador', superior='grupo',
+            redirect_url='equipes')
 
     return render(request, 'base/editar_colaborador.html', context)
 
