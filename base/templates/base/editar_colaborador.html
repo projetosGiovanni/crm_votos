@@ -6,30 +6,33 @@
     {% if erro == True %}
         <p> Selecione uma pessoa cadastrada! <p>
     {% endif %}
+    
     <h2>{{título}}</h2>
     <form method="POST" action="">
         {% csrf_token %}
-        <p>Dados {{subtítulo}}:</p>
-            <label for="grupo">Grupo:</label> 
-            <input required type="text" value="{{equipe_selecionada.grupo}}" name="grupo" list="grupo-list">
-            <datalist id="grupo-list">
-                <select id="grupo">
-                {% for grupo in grupos %}
-                    <option value="{{grupo.grupo}}">{{grupo.grupo}}</option>
-                {% endfor %}
-                </select>            
-            </datalist>
+            
+        <label for="superior">{{superior_str|capfirst}}:</label> 
+        <input required type="text" value="{{hierarquia_selecionada}}" name="superior" list="superior-list">
+        <datalist id="superior-list">
+            <select id="superior">
+            {% for superior in superiores %}
+                <option value="{{superior}}">{{superior}}</option>
+            {% endfor %}
+            </select>            
+        </datalist>
 
-            <label for="equipe">Equipe:</label> 
-            <input required type="text" value="{{equipe_selecionada.coordenador}} ({{equipe_selecionada.coordenador.cpf}})" name="coordenador" list="equipe-list">
-            <datalist id="equipe-list">
-                <select id="equipe">
-                {% for pessoa in pessoas %}
-                    <option value="{{pessoa}} ({{pessoa.cpf}})">{{pessoa}} ({{pessoa.cpf}})</option>
-                {% endfor %}
-                </select>            
-            </datalist>
+        <label for="pessoa">{{pessoa_str|capfirst}}:</label> 
+        <input required type="text" value="{{pessoa_selecionada.nome}} ({{pessoa_selecionada.cpf}})" name="pessoa" list="pessoa-list">
+        <datalist id="pessoa-list">
+            <select id="pessoa">
+            {% for pessoa in pessoas %}
+                <option value="{{pessoa.nome}} ({{pessoa.cpf}})">{{pessoa.nome}} ({{pessoa.cpf}})</option>
+            {% endfor %}
+            </select>            
+        </datalist>
+    
         <button>Salvar</button>
+    
         <a href="{{request.META.HTTP_REFERER}}">Voltar</a>
     </form>
 </div>

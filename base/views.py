@@ -39,7 +39,7 @@ def cadastrar(request, hierarquia_form, hierarquia, superior):
 
 def editar(request, context, hierarquia_selecionada, novo_superior, pessoa, superior, redirect_url):
 
-    pessoa_enviada = request.POST.get(pessoa)
+    pessoa_enviada = request.POST.get('pessoa')
     cpf_pessoa_enviada = pessoa_enviada[-15:-1]
 
     try:
@@ -47,6 +47,11 @@ def editar(request, context, hierarquia_selecionada, novo_superior, pessoa, supe
     except:
         context['erro'] = True
         return render(request, 'base/editar_colaborador.html', context)
+
+    nova_pessoa.hierarquia = pessoa
+    nova_pessoa.save()
+
+    print(nova_pessoa.hierarquia)
 
     setattr(hierarquia_selecionada, pessoa, nova_pessoa)
     setattr(hierarquia_selecionada, superior, novo_superior)
@@ -121,14 +126,20 @@ def cadastrarEquipe(request):
 
 def editarEquipe(request, pk):
     equipe = Equipe.objects.get(id=pk)
-    pessoas = Pessoa.objects.exclude(hierarquia='eleitor')
     grupos = Grupo.objects.all()
 
-    context = {'erro': False, 'título': 'Edite a equipe', 'subtítulo': 'da equipe',
-               'equipe_selecionada': equipe, 'grupos': grupos, 'pessoas': pessoas}
+    pessoas = Pessoa.objects.exclude(hierarquia='eleitor')
+    pessoas = list(pessoas.values('nome', 'cpf'))
+
+    pessoa_str = 'coordenador'
+    superior_str = 'grupo'
+
+    context = {'erro': False, 'título': 'Edite a equipe', 'pessoa_str': pessoa_str,
+               'superior_str': superior_str, 'pessoas': pessoas, 'superiores': grupos,
+               'pessoa_selecionada': equipe.coordenador, 'hierarquia_selecionada': equipe.grupo}
 
     if request.method == 'POST':
-        superior_enviado = request.POST.get('grupo')
+        superior_enviado = request.POST.get('superior')
         try:
             novo_superior = Grupo.objects.get(grupo=superior_enviado)
         except:
@@ -136,7 +147,7 @@ def editarEquipe(request, pk):
             return render(request, 'base/editar_colaborador.html', context)
 
         return editar(
-            request, context, equipe, novo_superior, pessoa='coordenador', superior='grupo',
+            request, context, equipe, novo_superior, pessoa_str, superior_str,
             redirect_url='equipes')
 
     return render(request, 'base/editar_colaborador.html', context)
@@ -161,15 +172,35 @@ def cadastrarLíder(request):
 
 
 def editarLíder(request, pk):
+
     líder = Líder.objects.get(id=pk)
+    equipes = Equipe.objects.all
+
+    pessoas = Pessoa.objects.exclude(hierarquia='eleitor')
+    pessoas = list(pessoas.values('nome', 'cpf'))
+
+    pessoa_str = 'líder'
+    superior_str = 'coordenador'
+
+    context = {'erro': False, 'título': 'Edite o(a) Líder', 'pessoa_str': pessoa_str,
+               'superior_str': superior_str, 'pessoas': pessoas, 'superiores': equipes,
+               'pessoa_selecionada': líder.líder, 'hierarquia_selecionada': líder.equipe}
 
     if request.method == 'POST':
-        hierarquia_form = LíderFormAll(request.POST, instance=líder)
-        hierarquia_form.save()
-        return redirect('líderes')
+        superior_enviado = request.POST.get('superior')
+        try:
+            novo_superior = Pessoa.objects.get(nome=superior_enviado)
+            novo_superior = Equipe.objects.get(coordenador=novo_superior)
+        except:
+            print("Coordenador errado!")
+            context['erro'] = True
+            return render(request, 'base/editar_colaborador.html', context)
 
-    context = {'pessoa_form': LíderFormAll(instance=líder), 'título': 'Edite o(a) líder', 'hierarquia': 'líder'}
-    return render(request, 'base/colaborador_form.html', context)
+        return editar(
+            request, context, líder, novo_superior, pessoa_str, superior_str,
+            redirect_url='líderes')
+
+    return render(request, 'base/editar_colaborador.html', context)
 
 
 # --------------------- CABOS ELEITORAIS ---------------------
