@@ -1,7 +1,7 @@
 {% extends 'main.html' %}
+{% load static %}
 
 {% block content %}
-
 <div>
     <h2>{{título}}</h2>
     <form method="POST" action="">
@@ -12,6 +12,6 @@
         <button>Salvar</button>
         <a href="{{request.META.HTTP_REFERER}}">Voltar</a>
     </form>
+    <script src="{% static 'js/cpfHelper.js' %}"></script>
 </div>
-<script src="myscripts.js"></script>
 {% endblock content %}

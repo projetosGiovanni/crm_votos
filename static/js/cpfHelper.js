@@ -1,16 +1,18 @@
-export const formatPhoneNumber = (value) => {
-  if (!value) return value;
-  const phoneNumber = value.replace(/[^\d]/g, "");
-  const phoneNumberLength = phoneNumber.length;
-  if (phoneNumberLength < 3) return phoneNumber;
-  if (phoneNumberLength < 7) {
-    return `(${phoneNumber.slice(0, 2)}) ${phoneNumber.slice(2)}`;
-  }
-  return `(${phoneNumber.slice(0, 2)}) ${phoneNumber.slice(
-    2,
-    7
-  )}-${phoneNumber.slice(7, 11)}`;
-};
+function filtroCPF(cpf) {
+  //   console.log(cpf);
+  cpf = cpf.replace(/\D/g, "");
+  cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2");
+  cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2");
+  cpf = cpf.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+  return cpf;
+}
 
-export const phoneNumberValidation = (value) =>
-  /\(\d{2}\)\s\d{5}-\d{4}/g.test(value);
+function formatCPF(event) {
+  const cpfFieldElement = document.getElementById("id_cpf");
+  const formattedCPF = filtroCPF(event.target.value);
+  cpfFieldElement.value = formattedCPF;
+}
+
+console.log("Script carregado!");
+const cpfField = document.getElementById("id_cpf");
+cpfField.addEventListener("keydown", formatCPF);

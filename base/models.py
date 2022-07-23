@@ -2,13 +2,6 @@ from django.db import models
 
 
 class Pessoa(models.Model):
-    HIERARQUIA_CHOICES = [
-        ('coordenador', 'Coordenador'),
-        ('líder', 'Líder'),
-        ('cabo', 'Cabo Eleitoral'),
-        ('eleitor', 'Eleitor'),
-    ]
-
     nome = models.CharField(max_length=200)
     telefone = models.CharField(max_length=20, null=True, blank=True)
     logradouro = models.CharField(max_length=200, null=True, blank=True)
@@ -17,7 +10,6 @@ class Pessoa(models.Model):
     cep = models.CharField(max_length=10, null=True, blank=True)
     cpf = models.CharField(max_length=14, null=True, blank=True, unique=True)
     nascimento = models.CharField(max_length=10, null=True, blank=True)
-    hierarquia = models.CharField(max_length=15, choices=HIERARQUIA_CHOICES, null=True)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
@@ -36,8 +28,8 @@ class Grupo(models.Model):
 
 
 class Equipe(models.Model):
-    grupo = models.ForeignKey(Grupo, null=True, on_delete=models.SET_NULL)
-    coordenador = models.ForeignKey(Pessoa, null=True, on_delete=models.SET_NULL)
+    grupo = models.ForeignKey(Grupo, null=True, on_delete=models.RESTRICT)
+    coordenador = models.ForeignKey(Pessoa, null=True, on_delete=models.RESTRICT)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
@@ -46,8 +38,8 @@ class Equipe(models.Model):
 
 
 class Líder(models.Model):
-    equipe = models.ForeignKey(Equipe, null=True, on_delete=models.SET_NULL)
-    líder = models.ForeignKey(Pessoa, null=True, on_delete=models.SET_NULL)
+    equipe = models.ForeignKey(Equipe, null=True, on_delete=models.RESTRICT)
+    líder = models.ForeignKey(Pessoa, null=True, on_delete=models.RESTRICT)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
@@ -56,8 +48,8 @@ class Líder(models.Model):
 
 
 class Cabo(models.Model):
-    líder = models.ForeignKey(Líder, null=True, on_delete=models.SET_NULL)
-    cabo = models.ForeignKey(Pessoa, null=True, on_delete=models.SET_NULL)
+    líder = models.ForeignKey(Líder, null=True, on_delete=models.RESTRICT)
+    cabo = models.ForeignKey(Pessoa, null=True, on_delete=models.RESTRICT)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
@@ -66,8 +58,8 @@ class Cabo(models.Model):
 
 
 class Voto(models.Model):
-    cabo = models.ForeignKey(Cabo, null=True, on_delete=models.SET_NULL)
-    eleitor = models.ForeignKey(Pessoa, null=True, on_delete=models.SET_NULL)
+    cabo = models.ForeignKey(Cabo, null=True, on_delete=models.RESTRICT)
+    eleitor = models.ForeignKey(Pessoa, null=True, on_delete=models.RESTRICT)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
