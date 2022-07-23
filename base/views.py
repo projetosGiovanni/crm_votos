@@ -1,5 +1,6 @@
 from multiprocessing import context
 from django.shortcuts import render, redirect
+from django.db.models import Q
 from django.views.generic.edit import FormView
 from .models import Pessoa, Grupo, Equipe, Líder, Cabo, Voto
 from .forms import PessoaForm, GrupoForm, EquipeForm, EquipeFormAll, LíderForm, LíderFormAll, CaboForm, CaboFormAll, VotoForm
@@ -51,8 +52,6 @@ def editar(request, context, hierarquia_selecionada, novo_superior, pessoa, supe
     nova_pessoa.hierarquia = pessoa
     nova_pessoa.save()
 
-    print(nova_pessoa.hierarquia)
-
     setattr(hierarquia_selecionada, pessoa, nova_pessoa)
     setattr(hierarquia_selecionada, superior, novo_superior)
     hierarquia_selecionada.save()
@@ -66,19 +65,41 @@ def atualizar(hierarquia_form, pessoa_form):
         pessoa_form.save()
         return redirect('home')
 
+
+def zipColaborador(colaboradores, superior_nome):
+    colaboradores_tupla = []
+    for colaborador in colaboradores:
+        superior = getattr(colaborador, superior_nome)
+        colaborador_tupla = (superior, colaborador)
+        colaboradores_tupla.append(colaborador_tupla)
+    return colaboradores_tupla
+
+
 # Create your views here.
 
 
 def home(request):
-    votos = Voto.objects.all()
-    context = {'votos': votos}
+    todos_votos = Voto.objects.all()
+    quantidade_votos = todos_votos.count()
+
+    q = request.GET.get('q') if request.GET.get('q') != None else ''
+    votos = Voto.objects.filter(
+        Q(eleitor__nome__icontains=q) |
+        Q(cabo__cabo__nome__icontains=q) |
+        Q(cabo__líder__líder__nome__icontains=q) |
+        Q(cabo__líder__equipe__coordenador__nome__icontains=q) |
+        Q(cabo__líder__equipe__grupo__grupo__icontains=q)
+    )
+    print(votos)
+
+    context = {'votos': votos, 'quantidade_votos': quantidade_votos}
     return render(request, 'base/home.html', context)
 
 
 # --------------------- GRUPOS ---------------------
 def grupos(request):
     grupos = Grupo.objects.all()
-    context = {'colaboradores': grupos, 'link': 'editar-grupo'}
+    context = {'colaboradores': grupos, 'colaborador_str': 'Grupo', 'colaborador_link': 'editar-grupo'}
     return render(request, 'base/colaboradores.html', context)
 
 
@@ -109,7 +130,11 @@ def editarGrupo(request, pk):
 # --------------------- EQUIPES ---------------------
 def equipes(request):
     equipes = Equipe.objects.all()
-    context = {'colaboradores': equipes, 'link': 'editar-equipe'}
+
+    equipes_tupla = zipColaborador(equipes, 'grupo')
+
+    context = {'colaboradores': equipes_tupla, 'colaborador_str': 'Equipe',
+               'colaborador_link': 'editar-equipe', 'superior_str': 'Grupo', 'superior_link': 'editar-grupo'}
     return render(request, 'base/colaboradores.html', context)
 
 
@@ -156,7 +181,11 @@ def editarEquipe(request, pk):
 # --------------------- LÍDERES ---------------------
 def líderes(request):
     líderes = Líder.objects.all()
-    context = {'colaboradores': líderes, 'link': 'editar-líder'}
+
+    líderes_tupla = zipColaborador(líderes, 'equipe')
+
+    context = {'colaboradores': líderes_tupla, 'colaborador_str': 'Líder',
+               'colaborador_link': 'editar-líder', 'superior_str': 'Equipe', 'superior_link': 'editar-equipe'}
     return render(request, 'base/colaboradores.html', context)
 
 
@@ -206,7 +235,11 @@ def editarLíder(request, pk):
 # --------------------- CABOS ELEITORAIS ---------------------
 def cabos(request):
     cabos = Cabo.objects.all()
-    context = {'colaboradores': cabos, 'link': 'editar-cabo'}
+
+    cabos_tupla = zipColaborador(cabos, 'líder')
+
+    context = {'colaboradores': cabos_tupla, 'colaborador_str': 'Cabo',
+               'colaborador_link': 'editar-cabo', 'superior_str': 'Líder', 'superior_link': 'editar-líder'}
     return render(request, 'base/colaboradores.html', context)
 
 
@@ -223,15 +256,33 @@ def cadastrarCabo(request):
 
 def editarCabo(request, pk):
     cabo = Cabo.objects.get(id=pk)
+    líderes = Líder.objects.all
+
+    pessoas = Pessoa.objects.exclude(hierarquia='eleitor')
+    pessoas = list(pessoas.values('nome', 'cpf'))
+
+    pessoa_str = 'cabo'
+    superior_str = 'líder'
+
+    context = {'erro': False, 'título': 'Edite o(a) Cabo Eleitoral', 'pessoa_str': pessoa_str,
+               'superior_str': superior_str, 'pessoas': pessoas, 'superiores': líderes,
+               'pessoa_selecionada': cabo.cabo, 'hierarquia_selecionada': cabo.líder}
 
     if request.method == 'POST':
-        hierarquia_form = CaboFormAll(request.POST, instance=cabo)
-        hierarquia_form.save()
-        return redirect('cabo')
+        superior_enviado = request.POST.get('superior')
+        try:
+            novo_superior = Pessoa.objects.get(nome=superior_enviado)
+            novo_superior = Líder.objects.get(líder=novo_superior)
+        except:
+            print("Líder errado!")
+            context['erro'] = True
+            return render(request, 'base/editar_colaborador.html', context)
 
-    context = {'pessoa_form': CaboFormAll(instance=cabo), 'título': 'Edite o(a) cabo', 'hierarquia': 'cabo'}
-    return render(request, 'base/colaborador_form.html', context)
+        return editar(
+            request, context, cabo, novo_superior, pessoa_str, superior_str,
+            redirect_url='cabos')
 
+    return render(request, 'base/editar_colaborador.html', context)
 # --------------------- ELEITORES ---------------------
 
 

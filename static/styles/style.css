@@ -51,9 +51,10 @@ h3 {
 
 .nav-link:link,
 .nav-link:visited {
-  display: inline-block;
+  display: block;
   text-decoration: none;
   color: inherit;
+  margin: 30px;
 }
 
 /* font-size: 1.8rem; */

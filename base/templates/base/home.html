@@ -1,6 +1,12 @@
 {% extends 'main.html' %}
 
 {% block content %}
+    <form action="{% url 'home' %}" method="get">
+        <input type="text" name="q" placeholder="Pesquise no sistema" />
+    </form>
+    <div>
+        Total de eleitores: {{quantidade_votos}}
+    </div>
     <section class="tabela-votos">
         <div class="linha-tabela-votos">
             <div>

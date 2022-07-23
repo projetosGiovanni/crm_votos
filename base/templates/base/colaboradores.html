@@ -1,7 +1,26 @@
 {% extends 'main.html' %}
 
 {% block content %}
-    {% for colaborador in colaboradores %}
-    <div><a href="{% url link colaborador.id %}">{{colaborador}}</a></div>
-    {% endfor %}
+    {% if colaborador_str == 'Grupo' %}
+
+        {% for colaborador in colaboradores %}
+            <div>
+                {{colaborador_str}}: <a href="{% url colaborador_link colaborador.id %}">{{colaborador}}</a>
+            </div>
+        {% endfor %}
+
+    {% else %}  
+
+        {% for superior, colaborador in colaboradores %}
+            <div>
+                {{superior_str}}: <a href="{% url superior_link superior.id %}">{{superior}}</a> 
+                {{colaborador_str}}: <a href="{% url colaborador_link colaborador.id %}">{{colaborador}}</a>
+            </div>
+        {% endfor %}
+
+    {% endif %}
+ 
+
+
+    
 {% endblock content %}
