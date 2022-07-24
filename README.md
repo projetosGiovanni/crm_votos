@@ -22,7 +22,7 @@ Nome do serviço no docker-compose: `nginx`.
 Porta utilizada: `80`.
 
 ## Instalação do Docker
-#
+
 
 Caso o Docker ainda não esteja instalado na máquina em que se deseja configurar o Athenas, faça-o seguindo as recomendações presentes na própria documentação da ferramenta de acordo com a versão do seu sistema operacional.
 
