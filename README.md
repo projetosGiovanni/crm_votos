@@ -16,7 +16,7 @@ Porta utilizada: `5432`.
 
 ### Nginx
 
-O Nginx foi a ferramenta escolhida para realizar o proxy de acesso aos demais serviços e servir arquivos estáticos. A versão utilizada atualmente é a 1.23.0 e a imagem oficial é utilizada como base para a construção da imagem aqui utilizada, que apenas copia arquivos de config e páginas de erros personalizadas.
+O Nginx foi a ferramenta escolhida para realizar o proxy de acesso aos demais serviços e servir arquivos estáticos. A versão utilizada atualmente é a 1.18.0 e a imagem oficial é utilizada como base para a construção da imagem aqui utilizada, que apenas copia arquivos de config e páginas de erros personalizadas.
 
 Nome do serviço no docker-compose: `nginx`.
 Porta utilizada: `80`.
