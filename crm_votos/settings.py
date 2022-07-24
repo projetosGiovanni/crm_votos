@@ -89,9 +89,9 @@ WSGI_APPLICATION = 'crm_votos.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('DB_NAME', 'crm-votos'),
+        'NAME': os.environ.get('DB_NAME', 'ueleicao'),
         'USER': os.environ.get('DB_USER', 'postgres'),
-        'PASSWORD': os.environ.get('DB_PASS', 'refute0unbar5stony-expedite'),
+        'PASSWORD': os.environ.get('DB_PASS', '1q2w3e'),
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -119,7 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-br'
 
 TIME_ZONE = 'UTC'
 
