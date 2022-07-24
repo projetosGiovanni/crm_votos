@@ -173,14 +173,14 @@ body {
   font-family: inherit;
 
   transition: all 0.3s;
-  background-color: #94d82d;
+  background-color: #40c057;
 
   margin-bottom: 20px;
 }
 
 .btn:hover,
 .btn:active {
-  background-color: #85c229;
+  background-color: #3aad4e;
 }
 
 /* HELPER/SETTINGS CLASSES */
