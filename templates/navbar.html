@@ -1,7 +1,11 @@
-<header class="header">
-  <div>
-    <a href="{% url 'home' %}" class="nav-link"><h1> Coordenação de Campanha Stélio Dener </h1></a>
-</div>
-  
-</header>
+{% load static %}
+<nav>
+  <div class='nav-items'>
+      <a href="{% url 'home' %}"><img src="{% static 'images/logo.png' %}" class="logo-img" alt="logo"></a>
+      <form action="{% url 'home' %}" method="get" class='search-bar'>
+        <input type="text" name="q" placeholder="Pesquise no sistema" />
+      </form>
+      <div>{{quantidade_votos}} votos cadastrados</div>
+  </div>
+</nav>
 

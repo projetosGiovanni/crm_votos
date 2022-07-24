@@ -79,9 +79,6 @@ def zipColaborador(colaboradores, superior_nome):
 
 
 def home(request):
-    todos_votos = Voto.objects.all()
-    quantidade_votos = todos_votos.count()
-
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     votos = Voto.objects.filter(
         Q(eleitor__nome__icontains=q) |
@@ -92,7 +89,7 @@ def home(request):
     )
     print(votos)
 
-    context = {'votos': votos, 'quantidade_votos': quantidade_votos}
+    context = {'votos': votos}
     return render(request, 'base/home.html', context)
 
 

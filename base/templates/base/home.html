@@ -1,32 +1,7 @@
 {% extends 'main.html' %}
 
 {% block content %}
-    <form action="{% url 'home' %}" method="get">
-        <input type="text" name="q" placeholder="Pesquise no sistema" />
-    </form>
-    <div>
-        Total de eleitores: {{quantidade_votos}}
-    </div>
     <section class="tabela-votos">
-        <div class="linha-tabela-votos">
-            <div>
-                <a href="{% url 'grupos' %}" class="btn">Grupos</a>
-            </div>
-            <div>
-                <a href="{% url 'equipes' %}" class="btn">Equipes</a>
-            </div>
-            <div>
-                <a href="{% url 'líderes' %}" class="btn">Líderes</a>
-            </div>
-            <div>
-                <a href="{% url 'cabos' %}" class="btn">Cabos Eleitorais</a>
-            </div>
-            <div>
-            </div> 
-            <div>
-
-            </div>
-        </div>
         <div class="linha-tabela-votos">
             <div>
                 <a href="{% url 'cadastrar-grupo' %}" class="btn">Novo Grupo</a>
@@ -44,7 +19,6 @@
                 <a href="{% url 'cadastrar-eleitor' %}" class="btn">Novo Eleitor</a>
             </div> 
             <div>
-
             </div>
         </div>
         
