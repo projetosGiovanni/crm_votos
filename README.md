@@ -5,7 +5,7 @@
 Além do uWSGI, que é o servidor de aplicação utilizado (xxx) para disponibilizar a aplicação Django, o Athenas depende de outros serviços para o seu correto funcionamento. Tais serviços são executados como containers _Docker_ e suas configurações estão inclusas no projeto. São eles:
 
 - [PostgreSQL v14.4](#postgresql)
-- [Nginx v1.18.0(#nginx)
+- [Nginx v1.18.0](#nginx)
 
 ### PostgreSQL
 
@@ -22,6 +22,7 @@ Nome do serviço no docker-compose: `nginx`.
 Porta utilizada: `80`.
 
 ## Instalação do Docker
+#
 
 Caso o Docker ainda não esteja instalado na máquina em que se deseja configurar o Athenas, faça-o seguindo as recomendações presentes na própria documentação da ferramenta de acordo com a versão do seu sistema operacional.
 
